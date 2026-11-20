@@ -25,5 +25,7 @@ jobs:
         run: |
           git config user.name "maestro-licenses"
           git config user.email "maestro-licenses@users.noreply.github.com"
+          # one small change a month keeps GitHub from switching this schedule off in a quiet repository
+          date -u +%Y-%m > hotkey/licenses/heartbeat.txt
           git add hotkey/licenses
-          git diff --cached --quiet || (git commit -m "Hotkey license issued" && git push)
+          git diff --cached --quiet || (git commit -m "Hotkey licenses" && git pull --rebase && git push)

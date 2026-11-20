@@ -11,7 +11,9 @@ param(
   [string]$SessionsFile = ''   # testing only: a JSON file shaped like Stripe's list response
 )
 $ErrorActionPreference = 'Stop'
-function Get-Sha([string]$text) { $sha = [Security.Cryptography.SHA256]::Create(); try { , $sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($text)) } finally { $sha.Dispose() } }
+# File name (bytes 0-31) and file key (bytes 32-63) come from the email through a deliberately slow function,
+# so the public folder cannot be searched quickly with a list of emails. Must match HotkeyLicense.PurchaseBytes in the Hotkey.
+function Get-PurchaseBytes([string]$email) { $kdf = New-Object Security.Cryptography.Rfc2898DeriveBytes([Text.Encoding]::UTF8.GetBytes($email), [Text.Encoding]::UTF8.GetBytes('maestro-hotkey-license-v1'), 200000, [Security.Cryptography.HashAlgorithmName]::SHA256); try { , $kdf.GetBytes(64) } finally { $kdf.Dispose() } }
 function ConvertTo-B64Url([byte[]]$b) { [Convert]::ToBase64String($b).TrimEnd('=').Replace('+', '-').Replace('/', '_') }
 
 if (-not $env:HOTKEY_LICENSE_KEY -or (-not $SessionsFile -and -not $env:STRIPE_KEY)) { 'Not set up yet: the two secrets are missing. Nothing done.'; return }
@@ -37,22 +39,25 @@ else {
 }
 
 New-Item -ItemType Directory -Force $OutDir | Out-Null
-$made = 0
+$made = 0; $skipped = 0
 foreach ($s in $sessions) {
   if ($s.payment_status -ne 'paid') { continue }
   $email = "$($s.customer_details.email)".Trim().ToLowerInvariant()
-  if ($email -eq '' -or $email.Contains('|') -or $email.Length -gt 100) { Write-Warning "A paid checkout has no usable email: $($s.id)"; continue }
-  $name = -join ((Get-Sha "maestro-hotkey-license-file|$email") | ForEach-Object { $_.ToString('x2') })
+  if ($email -eq '' -or $email.Contains('|') -or $email.Length -gt 100) { $skipped++; continue }
+  $bytes = Get-PurchaseBytes $email
+  $name = -join ($bytes[0..31] | ForEach-Object { $_.ToString('x2') })
   $path = Join-Path $OutDir "$name.txt"
   if (Test-Path $path) { continue }
   $issued = [DateTimeOffset]::FromUnixTimeSeconds([long]$s.created).UtcDateTime.ToString('yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture)
   $payload = [Text.Encoding]::UTF8.GetBytes("MaestroHotkey|1|$email|$issued")
   $key = 'MH1-' + (ConvertTo-B64Url $payload) + '.' + (ConvertTo-B64Url ($signer.SignData($payload, [Security.Cryptography.HashAlgorithmName]::SHA256)))
-  $aes = [Security.Cryptography.Aes]::Create(); $aes.Mode = 'CBC'; $aes.Padding = 'PKCS7'; $aes.Key = (Get-Sha "maestro-hotkey-license-key|$email"); $aes.GenerateIV()
+  $aes = [Security.Cryptography.Aes]::Create(); $aes.Mode = 'CBC'; $aes.Padding = 'PKCS7'; $aes.Key = [byte[]]$bytes[32..63]; $aes.GenerateIV()
   $enc = $aes.CreateEncryptor(); $plain = [Text.Encoding]::UTF8.GetBytes($key); $cipher = $enc.TransformFinalBlock($plain, 0, $plain.Length)
   [IO.File]::WriteAllText($path, [Convert]::ToBase64String($aes.IV + $cipher))
   $enc.Dispose(); $aes.Dispose()
   $made++
 }
 $signer.Dispose()
-"checkouts read: $($sessions.Count); new licenses written: $made"
+# The Actions log of this public repository is public: say nothing about how many sales there were or who bought.
+if ($skipped -gt 0) { Write-Warning 'A paid checkout had no usable email. Look in the Stripe dashboard.' }
+if ($SessionsFile) { "checkouts read: $($sessions.Count); new licenses written: $made" } else { 'done' }
