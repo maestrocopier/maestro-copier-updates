@@ -7,7 +7,7 @@
 # so the public folder shows neither who bought nor their keys; the Hotkey finds its file from the email typed in.
 param(
   [string]$OutDir = (Join-Path $PSScriptRoot '..\hotkey\licenses'),
-  [string]$PaymentLink = 'plink_1Udte6Q4tCinVvg6NdeLp60Y',
+  [string]$PaymentLink = 'plink_1UdxrbQ4tCinVvg65KI4OHfL',
   [string]$SessionsFile = ''   # testing only: a JSON file shaped like Stripe's list response
 )
 $ErrorActionPreference = 'Stop'

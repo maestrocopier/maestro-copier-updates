@@ -33,7 +33,7 @@
 
 **Prop firm and funded accounts.** Check your firm's rules on order-entry tools before using the Hotkey on such an account.
 
-**After the 14 days.** The Hotkey costs $149, one time, no subscription. Buy it at maestrocopier.com/products. After you pay, right-click the chart, click **Indicators**, click **Maestro Signal Bar Hotkey**, type **the email you paid with** into **License key** (under **5. License**) and click **OK**. The Hotkey looks up your purchase over the internet and unlocks itself, usually within half an hour of paying and at most about an hour; it keeps checking while the chart is open. You do this once: every chart on this computer is then unlocked. If we send you a license key instead, paste it into the same box.
+**After the 14 days.** The Hotkey costs $49, one time, no subscription. Buy it at maestrocopier.com/products. After you pay, right-click the chart, click **Indicators**, click **Maestro Signal Bar Hotkey**, type **the email you paid with** into **License key** (under **5. License**) and click **OK**. The Hotkey looks up your purchase over the internet and unlocks itself, usually within half an hour of paying and at most about an hour; it keeps checking while the chart is open. You do this once: every chart on this computer is then unlocked. If we send you a license key instead, paste it into the same box.
 
 | Banner message | What to do |
 | --- | --- |
