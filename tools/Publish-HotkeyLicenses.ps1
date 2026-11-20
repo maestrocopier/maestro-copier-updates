@@ -14,7 +14,7 @@ $ErrorActionPreference = 'Stop'
 function Get-Sha([string]$text) { $sha = [Security.Cryptography.SHA256]::Create(); try { , $sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($text)) } finally { $sha.Dispose() } }
 function ConvertTo-B64Url([byte[]]$b) { [Convert]::ToBase64String($b).TrimEnd('=').Replace('+', '-').Replace('/', '_') }
 
-if (-not $env:HOTKEY_LICENSE_KEY) { throw 'HOTKEY_LICENSE_KEY is not set.' }
+if (-not $env:HOTKEY_LICENSE_KEY -or (-not $SessionsFile -and -not $env:STRIPE_KEY)) { 'Not set up yet: the two secrets are missing. Nothing done.'; return }
 $f = $env:HOTKEY_LICENSE_KEY.Trim().Split('|')
 if ($f.Count -ne 3) { throw 'HOTKEY_LICENSE_KEY is not in the expected form.' }
 $point = New-Object Security.Cryptography.ECPoint; $point.X = [Convert]::FromBase64String($f[1]); $point.Y = [Convert]::FromBase64String($f[2])
