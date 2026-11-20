@@ -1,8 +1,8 @@
-# Maestro Hotkey r22 quick guide
+# Maestro Hotkey r23 quick guide
 
 **The Hotkey trades the account you select in Chart Trader**, simulation or live. Try it on a simulation account (Sim101 or Playback101) first. On a live account it places real orders: the banner at the top of the chart always shows the account it will use. You get 14 days from first use on this computer under your Windows account. The free trial in this build stops arming after February 28, 2027. A licensed copy does not stop.
 
-1. **Install.** In NinjaTrader Control Center, choose **Tools → Import → NinjaScript Add-On** and import **MaestroHotkeyR22.zip** once.
+1. **Install.** In NinjaTrader Control Center, choose **Tools → Import → NinjaScript Add-On** and import **MaestroHotkeyR23.zip** once.
 2. **Set up.** In the chart's **Indicators** dialog, add **Maestro Signal Bar Hotkey** once. Open **Chart Trader** and pick your account under **Account**. Configure your ATM under **ATM Strategy → Custom**, and save it as a named template. Select the saved name in **ATM Strategy** and verify the account and template in the Hotkey banner.
 3. **Use.** Click the chart, then press main-row **=** for long or **-** for short on a US layout while the bar is forming. The amber dot marks the bar you armed. Press the same key again to disarm. If your layout places those keys elsewhere or requires Shift, choose an available unmodified key in Indicators and confirm the binding there.
 4. **Check the result.** A qualifying bar sets a stop one tick past its high or low. The next bar only has to reach the level. If the stop cannot rest, the hotkey waits for a trade at the level, then tries a limit at that price. If the next bar misses the level, there is no entry. Unfilled entry quantity is cancelled at that bar's close. Maximum slip (ticks) caps how far beyond the trigger a stop-limit entry can fill, with a default of one tick. A fast market can leave it unfilled. The fallback limit stays at the trigger price. Find **Maximum slip (ticks)** in **Indicators > Maestro Signal Bar Hotkey > Order**. Set it to 0 to place the limit at the trigger price.
@@ -22,7 +22,7 @@
 | Already on this chart / A Hotkey entry is already armed or pending | Remove the extra copy or disarm the other chart and check its orders. |
 | Waiting for the first trade of the new session | Wait for the chart to update, then try again. |
 | Hotkey could not check the order | Check Orders and Positions before trying again. |
-| Your 14-day free trial has ended | Buy the Hotkey at maestrocopier.com/products and paste your license key (see "After the 14 days" below). Either arm key can still disarm an existing arm. |
+| Your 14-day free trial has ended | Buy the Hotkey at maestrocopier.com/products and type the email you paid with (see "After the 14 days" below). Either arm key can still disarm an existing arm. |
 | The computer's date changed | Set the computer date correctly and restart NinjaTrader. |
 | The trial record could not be read | A new 14-day free trial was started. |
 | The trial start could not be saved | The Hotkey can be used for this session. |
@@ -33,11 +33,15 @@
 
 **Prop firm and funded accounts.** Check your firm's rules on order-entry tools before using the Hotkey on such an account.
 
-**After the 14 days.** The Hotkey costs $149, one time, no subscription. Buy it at maestrocopier.com/products. You receive a license key by email. Right-click the chart, click **Indicators**, click **Maestro Signal Bar Hotkey**, paste the key into **License key** (under **5. License**) and click **OK**. You do this once: every chart on this computer is then unlocked.
+**After the 14 days.** The Hotkey costs $149, one time, no subscription. Buy it at maestrocopier.com/products. After you pay, right-click the chart, click **Indicators**, click **Maestro Signal Bar Hotkey**, type **the email you paid with** into **License key** (under **5. License**) and click **OK**. The Hotkey looks up your purchase over the internet and unlocks itself, usually within half an hour of paying and at most about an hour; it keeps checking while the chart is open. You do this once: every chart on this computer is then unlocked. If we send you a license key instead, paste it into the same box.
 
 | Banner message | What to do |
 | --- | --- |
-| That license key is not valid | Copy the whole key from your email, from MH1- to the last character, and paste it again. If your email split the key over two lines, send us a message and we will help. |
+| Looking for your purchase... | Wait. The Hotkey is checking. |
+| No purchase found yet for that email | It can take up to an hour after you pay. Leave the chart open. If it does not unlock, check the spelling of the email, then contact us. |
+| Could not reach the license server | Check your internet connection. The Hotkey keeps trying. |
+| License found ... the Hotkey is unlocked | Nothing. You are done. |
+| That is not valid | Type the email you paid with, or paste the whole license key we sent you, from MH1- to the last character. |
 | License accepted. It could not be saved on this computer | The key works, but leave it in the License key box on each chart. |
 
 The trial record is kept in %LOCALAPPDATA%\Maestro\Hotkey\trial.txt for your Windows account.
