@@ -1,8 +1,8 @@
-# Maestro Hotkey r23 quick guide
+# Maestro Hotkey r27 quick guide
 
 **The Hotkey trades the account you select in Chart Trader**, simulation or live. Try it on a simulation account (Sim101 or Playback101) first. On a live account it places real orders: the banner at the top of the chart always shows the account it will use. You get 14 days from first use on this computer under your Windows account. The free trial in this build stops arming after February 28, 2027. A licensed copy does not stop.
 
-1. **Install.** In NinjaTrader Control Center, choose **Tools → Import → NinjaScript Add-On** and import **MaestroHotkeyR23.zip** once.
+1. **Install.** In NinjaTrader Control Center, choose **Tools → Import → NinjaScript Add-On** and import **MaestroHotkeyR27.zip** once.
 2. **Set up.** In the chart's **Indicators** dialog, add **Maestro Signal Bar Hotkey** once. Open **Chart Trader** and pick your account under **Account**. Configure your ATM under **ATM Strategy → Custom**, and save it as a named template. Select the saved name in **ATM Strategy** and verify the account and template in the Hotkey banner.
 3. **Use.** Click the chart, then press main-row **=** for long or **-** for short on a US layout while the bar is forming. The amber dot marks the bar you armed. Press the same key again to disarm. If your layout places those keys elsewhere or requires Shift, choose an available unmodified key in Indicators and confirm the binding there.
 4. **Check the result.** A qualifying bar sets a stop one tick past its high or low. The next bar only has to reach the level. If the stop cannot rest, the hotkey waits for a trade at the level, then tries a limit at that price. If the next bar misses the level, there is no entry. Unfilled entry quantity is cancelled at that bar's close. Maximum slip (ticks) caps how far beyond the trigger a stop-limit entry can fill, with a default of one tick. A fast market can leave it unfilled. The fallback limit stays at the trigger price. Find **Maximum slip (ticks)** in **Indicators > Maestro Signal Bar Hotkey > Order**. Set it to 0 to place the limit at the trigger price.
@@ -41,12 +41,13 @@
 | No purchase found yet for that email | It can take up to an hour after you pay. Leave the chart open. If it does not unlock, check the spelling of the email, then contact us. |
 | Could not reach the license server | Check your internet connection. The Hotkey keeps trying. |
 | License found ... the Hotkey is unlocked | Nothing. You are done. |
+| Update available: r... | A newer version is on the website. Download it and follow "Updating from an older version" below. |
 | That is not valid | Type the email you paid with, or paste the whole license key we sent you, from MH1- to the last character. |
-| License accepted. It could not be saved on this computer | The key works, but leave it in the License key box on each chart. |
+| License accepted. It could not be saved on this computer yet | The Hotkey keeps trying to save it. If the message returns after a restart, enter the license again. |
 
 The trial record is kept in %LOCALAPPDATA%\Maestro\Hotkey\trial.txt for your Windows account.
 
-**Updating from an older beta.** In Control Center, use **Tools > Remove NinjaScript Assembly** to remove the old Hotkey assembly. Import the new ZIP, then fully exit and restart NinjaTrader so the old assembly is unloaded.
+**Updates.** When a newer version is on the website, the text at the top of your chart adds a line: "Update available: r27. Download it at maestrocopier.com/products." (with the new number). The Hotkey checks once each time NinjaTrader starts; it never downloads or installs anything by itself. Your license and your settings stay as they are when you update. One exception: if you had typed your purchase email in an older version and it had not unlocked yet, type the email once more after updating. In Control Center, use **Tools > Remove NinjaScript Assembly** to remove the old Hotkey assembly. Import the new ZIP, then fully exit and restart NinjaTrader so the old assembly is unloaded.
 
 **Remove.** Check Orders and Positions first. In the chart's **Indicators** dialog, select the configured hotkey, click **Remove**, and apply. For a compiled ZIP, open **Control Center → Tools → Remove NinjaScript Assembly**, select the Maestro Hotkey assembly and remove it. For a source ZIP, open **New → NinjaScript Editor**, remove the Hotkey indicator and its package-listed helper scripts in the explorer, then compile. Use the package's file list so you remove only its own sources.
 
