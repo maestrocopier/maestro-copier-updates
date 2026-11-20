@@ -1,0 +1,29 @@
+name: hotkey-licenses
+# Every few minutes: read paid Hotkey checkouts from Stripe and publish each buyer's license file.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: hotkey-licenses
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make licenses for paid checkouts
+        shell: pwsh
+        env:
+          STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+          HOTKEY_LICENSE_KEY: ${{ secrets.HOTKEY_LICENSE_KEY }}
+        run: ./tools/Publish-HotkeyLicenses.ps1
+      - name: Publish new license files
+        run: |
+          git config user.name "maestro-licenses"
+          git config user.email "maestro-licenses@users.noreply.github.com"
+          git add hotkey/licenses
+          git diff --cached --quiet || (git commit -m "Hotkey license issued" && git push)
