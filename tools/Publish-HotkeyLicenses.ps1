@@ -7,7 +7,8 @@
 # so the public folder shows neither who bought nor their keys; the Hotkey finds its file from the email typed in.
 param(
   [string]$OutDir = (Join-Path $PSScriptRoot '..\hotkey\licenses'),
-  [string]$PaymentLink = 'plink_1UdyzXQ4tCinVvg6Px2rqy6w',
+  # The Hotkey's own link, and the Maestro Copier link: the copier is sold WITH the Hotkey, so a copier buyer's email unlocks the Hotkey too.
+  [string[]]$PaymentLink = @('plink_1UdyzXQ4tCinVvg6Px2rqy6w', 'plink_1UVIukQ4tCinVvg6aDGW8y1h'),
   [string]$SessionsFile = ''   # testing only: a JSON file shaped like Stripe's list response
 )
 $ErrorActionPreference = 'Stop'
@@ -29,13 +30,15 @@ if ($SessionsFile) { $sessions = @((Get-Content $SessionsFile -Raw | ConvertFrom
 else {
   if (-not $env:STRIPE_KEY) { throw 'STRIPE_KEY is not set.' }
   $headers = @{ Authorization = "Bearer $($env:STRIPE_KEY)" }
-  $after = ''
-  do {
-    $url = "https://api.stripe.com/v1/checkout/sessions?payment_link=$PaymentLink&status=complete&limit=100" + $(if ($after) { "&starting_after=$after" } else { '' })
-    $page = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
-    $sessions += @($page.data)
-    if ($page.has_more -and $page.data.Count -gt 0) { $after = $page.data[-1].id } else { $after = '' }
-  } while ($after)
+  foreach ($link in $PaymentLink) {
+    $after = ''
+    do {
+      $url = "https://api.stripe.com/v1/checkout/sessions?payment_link=$link&status=complete&limit=100" + $(if ($after) { "&starting_after=$after" } else { '' })
+      $page = Invoke-RestMethod -Uri $url -Headers $headers -Method Get
+      $sessions += @($page.data)
+      if ($page.has_more -and $page.data.Count -gt 0) { $after = $page.data[-1].id } else { $after = '' }
+    } while ($after)
+  }
 }
 
 New-Item -ItemType Directory -Force $OutDir | Out-Null
